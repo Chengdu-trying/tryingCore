@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC
+	"-//Apache Software Foundation//DTD Struts Configuration 2.3//EN"
+	"http://struts.apache.org/dtds/struts-2.3.dtd">
+
+<struts>
+    <!-- 页面上对应的请求链接:actionName!MethodName.action -->
+    <package name="base" namespace="base" extends="struts-default">
+    	<result-types>
+            <result-type name="json" class="org.apache.struts2.json.JSONResult">
+                <param name="excludeProperties">[a-zA-Z][a-zA-Z0-9]*Service</param>
+                <param name="ignoreHierarchy">false</param>
+            </result-type>
+        </result-types>
+    	<!-- 全局result，404页面	502页面 -->
+    	<interceptors>
+    		<interceptor name="ajaxController" class="com.trying.toBe.core.web.interceptor.AjaxReturnInterceptor"></interceptor>
+    		<interceptor-stack name="baseStack">
+    			<interceptor-ref name="defaultStack"></interceptor-ref>
+    			<interceptor-ref name="ajaxController"></interceptor-ref>
+    		</interceptor-stack>
+    	</interceptors>
+    	<!-- 定义默认拦截器栈 -->
+    	<default-interceptor-ref name="baseStack" />
+    	<global-results>
+    		<result name="ajax" type="json">
+                <param name="root">
+                    result
+                </param>
+            </result>
+            <result name="page" type="json">
+                <param name="root">
+                    pageResource
+                </param>
+            </result>
+    		<result name="404">/404.htm</result>
+    		<result name="fail">/page/fail.html</result>
+    		<result name="error">/error.html</result>
+    		<result name="login" type="redirect">/Login.html</result>
+    	</global-results>
+		<action name="ajaxPage/*" class="com.trying.toBe.core.web.action.BaseAction" method="{1}">
+			<result name="ajax" type="json">
+                <param name="root">
+                    result
+                </param>
+            </result>
+		</action>
+		<!-- 特殊 -->
+		<action name="specialAjax/*" class="com.trying.toBe.core.web.action.BaseAction" method="{1}"></action>
+    </package>
+</struts>
